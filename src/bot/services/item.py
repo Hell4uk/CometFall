@@ -1,5 +1,4 @@
-from ast import Dict
-from typing import Optional, Type
+from typing import Optional, Type, List, Dict
 
 from tortoise.exceptions import DoesNotExist
 from bot.db.models import Item, InventoryItem, ItemTypeEnum, ItemEnum, ItemRarityEnum
@@ -41,7 +40,7 @@ class ItemService():
         item = await Item.get_or_none(id=item_id)
         return item
 
-    async def get_by_name(self, item_name: str) -> Optional[Dict[Item]]:
+    async def get_by_name(self, item_name: str) -> Optional[List[Item]]:
         items = await Item.get(name=item_name)
         return items
 
