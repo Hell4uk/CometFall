@@ -53,3 +53,6 @@ class InventoryItem(Model):
 
     def __str__(self) -> str:
         return f"<Item id={self.id} x{self.quantity}>"
+
+class Enemy(Model):
+    pass
