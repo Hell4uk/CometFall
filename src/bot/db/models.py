@@ -31,7 +31,7 @@ class Item(Model):
     id = fields.BigIntField(pk=True)
 
     name = fields.CharField(max_length=225, null=False)
-    description = fields.CharField(max_length=512, null=True)
+    description = fields.TextField(max_length=512, null=True)
     type = fields.CharEnumField(ItemTypeEnum)
     attributes = fields.JSONField(default=dict)
     rarity = fields.CharEnumField(ItemRarityEnum, default=ItemRarityEnum.COMMON)
@@ -45,7 +45,7 @@ class InventoryItem(Model):
     id = fields.BigIntField(pk=True)
 
     user = fields.ForeignKeyField('models.User', related_name="inventory_items")
-    item = fields.ForeignKeyField('models.item', related_name='instances')
+    item = fields.ForeignKeyField('models.Item', related_name='instances')
     quantity = fields.IntField(default=1)
     equipped = fields.BooleanField(default=True)
     

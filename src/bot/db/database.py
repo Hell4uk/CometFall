@@ -6,10 +6,10 @@ from ..config import ConfigService
 logger = logging.getLogger(__name__)
 
 TORTOISE_ORM = {
-    "connection": {"default": ConfigService.DATABASE_URL},
+    "connections": {"default": ConfigService.DATABASE_URL},
     "apps": {
         "models": {
-            "models": ["bot.db.models", "aerich.models"],
+            "models": ["src.bot.db.models", "aerich.models"],
             "default_connection": "default",
         },
     },
