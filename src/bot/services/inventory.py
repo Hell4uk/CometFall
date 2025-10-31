@@ -1,6 +1,6 @@
 from typing import Optional, List
 from tortoise.exceptions import DoesNotExist
-from bot.db.models import InventoryItem, User, Item
+from bot.db.models import InventoryItems, Users, Items
 from bot.services.item import ItemService
 
 
@@ -9,9 +9,9 @@ class InventoryService():
         self.item_service = ItemService()
     
 
-    async def add(self, user: User, item: Item, quantity: int = 1, auto_create: bool = True) -> InventoryItem:
+    async def add(self, user: Users, item: Items, quantity: int = 1, auto_create: bool = True) -> InventoryItems:
         try:
-            inv = await InventoryItem.get(user=user, item=item)
+            inv = await InventoryItems.get(user=user, item=item)
             inv.quantity += quantity
             await inv.save()
             return inv
@@ -20,11 +20,11 @@ class InventoryService():
             if not auto_create:
                 raise ValueError("Item not found in inventory and auto_create=False")
             
-        inv = await InventoryItem.create(user=user, item=item, quantity=quantity)
+        inv = await InventoryItems.create(user=user, item=item, quantity=quantity)
         return inv
 
-    async def remove(self, user: User, item: Item, quantity: int = 1) -> InventoryItem:
-        inv = await InventoryItem.get_or_none(user=user, item=item)
+    async def remove(self, user: Users, item: Items, quantity: int = 1) -> InventoryItems:
+        inv = await InventoryItems.get_or_none(user=user, item=item)
         if not inv:
             raise ValueError("Item not found in inventory")
         
@@ -38,15 +38,15 @@ class InventoryService():
         else:
             await inv.save()
 
-    async def get(self, user: User) -> Optional[List[InventoryItem]]:
-        inv = await InventoryItem.filter(user=user).prefetch_related('item')
+    async def get(self, user: Users) -> Optional[List[InventoryItems]]:
+        inv = await InventoryItems.filter(user=user).prefetch_related('item')
         return inv
     
-    async def clear(self, user: User) -> None:
-        await InventoryItem.filter(user=user).delete()
+    async def clear(self, user: Users) -> None:
+        await InventoryItems.filter(user=user).delete()
 
-    async def equip_item(self, user: User, item: Item) -> InventoryItem:
-        inv = await InventoryItem.get_or_none(user=user, item=item)
+    async def equip_item(self, user: Users, item: Items) -> InventoryItems:
+        inv = await InventoryItems.get_or_none(user=user, item=item)
         if not inv:
             raise ValueError("Item not found in inventory")
 
@@ -55,8 +55,8 @@ class InventoryService():
 
         return inv
     
-    async def unequip_item(self, user: User, item: Item) -> InventoryItem:
-        inv = await InventoryItem.get_or_none(user=user, item=item)
+    async def unequip_item(self, user: Users, item: Items) -> InventoryItems:
+        inv = await InventoryItems.get_or_none(user=user, item=item)
         if not inv:
             raise ValueError("Item not found in inventory")
 

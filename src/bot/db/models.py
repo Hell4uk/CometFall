@@ -14,7 +14,7 @@ class ItemRarityEnum(Enum):
     COMMON = 'common'
 
 
-class User(Model):
+class Users(Model):
     id = fields.BigIntField(pk=True)
     telegram_id = fields.BigIntField(unique=True)
 
@@ -27,7 +27,7 @@ class User(Model):
     def __str__(self) -> str:
         return f"<User id={self.id} telegram_id={self.telegram_id} ({self.username})>"
 
-class Item(Model):
+class Items(Model):
     id = fields.BigIntField(pk=True)
 
     name = fields.CharField(max_length=225, null=False)
@@ -41,18 +41,22 @@ class Item(Model):
     def __str__(self) -> str:
         return f"<Item id={self.id} ({self.name})>"
 
-class InventoryItem(Model):
+class InventoryItems(Model):
     id = fields.BigIntField(pk=True)
 
-    user = fields.ForeignKeyField('models.User', related_name="inventory_items")
-    item = fields.ForeignKeyField('models.Item', related_name='instances')
+    user = fields.ForeignKeyField('models.Users', related_name="inventory_items")
+    item = fields.ForeignKeyField('models.Items', related_name='instances')
     quantity = fields.IntField(default=1)
     equipped = fields.BooleanField(default=True)
     
     acquired_at = fields.DatetimeField(auto_now_add=True)
 
+    class Meta():
+        table = 'inventory_items'
+        unique_together = ('user', 'item')
+
     def __str__(self) -> str:
         return f"<Item id={self.id} x{self.quantity}>"
 
-class Enemy(Model):
+class Enemies(Model):
     pass

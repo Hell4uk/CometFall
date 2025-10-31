@@ -1,7 +1,7 @@
 from typing import Optional, Type, List, Dict
 
 from tortoise.exceptions import DoesNotExist
-from bot.db.models import Item, InventoryItem, ItemTypeEnum, ItemEnum, ItemRarityEnum
+from bot.db.models import Items, InventoryItems, ItemTypeEnum, ItemEnum, ItemRarityEnum
 from bot.db.schemas.items import ArmorAttributes, BaseAttributes, WeaponAttributes
 from pydantic import ValidationError
 
@@ -30,21 +30,21 @@ class ItemService():
             raise ValueError(f'Invalid attributes for {item_type}: {_ex.errors()}')
         
 
-    async def create(self, name: str, item_type: ItemTypeEnum, item_rarity: ItemRarityEnum, attributes: dict):
+    async def create(self, name: str, item_type: ItemTypeEnum, item_rarity: ItemRarityEnum, attributes: dict) -> Items:
         valid_attrs = self._validate_attributes(item_type, attributes)
         
-        item = await Item.get_or_create(name=name, rarity=item_rarity, type=item_type, attributes=valid_attrs)
+        item = await Items.get_or_create(name=name, rarity=item_rarity, type=item_type, attributes=valid_attrs)
         return item
 
-    async def get_by_id(self, item_id: int) -> Item:
-        item = await Item.get_or_none(id=item_id)
+    async def get_by_id(self, item_id: int) -> Items:
+        item = await Items.get_or_none(id=item_id)
         return item
 
-    async def get_by_name(self, item_name: str) -> Optional[List[Item]]:
-        items = await Item.get(name=item_name)
+    async def get_by_name(self, item_name: str) -> Optional[List[Items]]:
+        items = await Items.get(name=item_name)
         return items
 
-    async def update(self, item_id: str, **updates: any) -> Item:
+    async def update(self, item_id: str, **updates: any) -> Items:
         item = await self.get_item(item_id)
 
         if "attributes" in updates:
