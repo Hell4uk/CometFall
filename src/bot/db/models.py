@@ -6,11 +6,11 @@ from tortoise import fields
 from tortoise.models import Model
 from enum import Enum
 
-class ItemTypeEnum(Enum):
+class ItemTypeEnum(str, Enum):
     WEAPON = 'weapon'
     ARMOR = 'armor'
 
-class ItemRarityEnum(Enum):
+class ItemRarityEnum(str, Enum):
     COMMON = 'common'
 
 
@@ -23,6 +23,10 @@ class Users(Model):
     last_name = fields.CharField(max_length=255, null=True)
 
     created_at = fields.DatetimeField(auto_now_add=True)
+
+    class Meta:
+        table = 'users'
+        ordering = ['id', 'username']
 
     def __str__(self) -> str:
         return f"<User id={self.id} telegram_id={self.telegram_id} ({self.username})>"
@@ -38,6 +42,10 @@ class Items(Model):
 
     created_at = fields.DatetimeField(auto_now_add=True)
 
+    class Meta:
+        table = 'items'
+        ordering = ['id', 'name']
+
     def __str__(self) -> str:
         return f"<Item id={self.id} ({self.name})>"
 
@@ -51,7 +59,7 @@ class InventoryItems(Model):
     
     acquired_at = fields.DatetimeField(auto_now_add=True)
 
-    class Meta():
+    class Meta:
         table = 'inventory_items'
         unique_together = ('user', 'item')
 

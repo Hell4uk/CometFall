@@ -3,7 +3,7 @@ from tortoise.exceptions import DoesNotExist
 from bot.db.models import InventoryItems, Users, Items
 from bot.services.item import ItemService
 
-
+# TODO: Сделать методы для получения используемых предметов, сделать копии методов для получения (dict), также улучшить все существующие методы
 class InventoryService():
     def __init__(self) -> None:
         self.item_service = ItemService()
@@ -23,7 +23,7 @@ class InventoryService():
         inv = await InventoryItems.create(user=user, item=item, quantity=quantity)
         return inv
 
-    async def remove(self, user: Users, item: Items, quantity: int = 1) -> InventoryItems:
+    async def remove(self, user: Users, item: Items, quantity: int = 1) -> None:
         inv = await InventoryItems.get_or_none(user=user, item=item)
         if not inv:
             raise ValueError("Item not found in inventory")
@@ -41,6 +41,11 @@ class InventoryService():
     async def get(self, user: Users) -> Optional[List[InventoryItems]]:
         inv = await InventoryItems.filter(user=user).prefetch_related('item')
         return inv
+
+    async def get_inventory_dict(self, user: Users) -> dict:
+        inv = await InventoryItems.filter(user=user).prefetch_related('item')
+        return {str(i.item.name): i.quantity for i in inv}
+
     
     async def clear(self, user: Users) -> None:
         await InventoryItems.filter(user=user).delete()
