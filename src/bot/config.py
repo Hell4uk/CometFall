@@ -12,8 +12,10 @@ class ConfigService:
 
 @dataclass
 class TelegramTextMap:
-    async def GREETING_TEXT(ctx: Message or CallbackQuery):
+    @staticmethod
+    async def GREETING_TEXT(ctx: Message | CallbackQuery):
         return f"Привет, {ctx.from_user.first_name}"
     
-    async def MAINMENU_TEXT(ctx: Message or CallbackQuery):
+    @staticmethod
+    async def MAINMENU_TEXT(ctx: Message | CallbackQuery):
         return f"{ctx.from_user.first_name}, выбери действие:"

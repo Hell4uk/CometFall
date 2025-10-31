@@ -33,19 +33,24 @@ class ItemService():
     async def create(self, name: str, item_type: ItemTypeEnum, item_rarity: ItemRarityEnum, attributes: dict) -> Items:
         valid_attrs = self._validate_attributes(item_type, attributes)
         
-        item = await Items.get_or_create(name=name, rarity=item_rarity, type=item_type, attributes=valid_attrs)
+        item = await Items.get_or_create(name=name, defaults={
+            "rarity": item_rarity,
+            "type": item_type,
+            "attributes": valid_attrs,
+        })
+
         return item
 
-    async def get_by_id(self, item_id: int) -> Items:
+    async def get_by_id(self, item_id: int) -> Optional[Items]:
         item = await Items.get_or_none(id=item_id)
         return item
 
     async def get_by_name(self, item_name: str) -> Optional[List[Items]]:
-        items = await Items.get(name=item_name)
+        items = await Items.filter(name=item_name).all()
         return items
 
     async def update(self, item_id: str, **updates: any) -> Items:
-        item = await self.get_item(item_id)
+        item = await self.get_by_id(item_id)
 
         if "attributes" in updates:
             item.attributes = self._validate_attributes(item.type, updates["attributes"])

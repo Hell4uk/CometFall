@@ -51,6 +51,8 @@ class InventoryService():
         await InventoryItems.filter(user=user).delete()
 
     async def equip_item(self, user: Users, item: Items) -> InventoryItems:
+        await InventoryItems.filter(user=user, item__type=item.type, equipped=True).update(equipped=False)
+
         inv = await InventoryItems.get_or_none(user=user, item=item)
         if not inv:
             raise ValueError("Item not found in inventory")
