@@ -9,7 +9,7 @@ class InventoryService():
     def __init__(self) -> None:
         self.item_service = ItemService()
     
-
+    # ? --- CRUD методы ---
     async def add(self, user: Users, item: Items, quantity: int = 1, auto_create: bool = True) -> InventoryItems:
         try:
             inv = await InventoryItems.get(user=user, item=item)

@@ -51,3 +51,67 @@ class ArmorCalculation(BaseCalculation):
         armor = floor(armor)
 
         return armor
+
+# src/bot/game/calculate/enemy.py
+from math import floor
+from bot.db.models import Enemies
+from typing import Dict
+
+
+class EnemyCalculator:
+    BASE_HP      = 12
+    BASE_DAMAGE  = 9
+    BASE_GOLD    = 18
+    BASE_EXP     = 25
+
+    RARITY_BONUS = {
+        "common": 1.0,
+        "elite":  2.3,
+        "boss":   8.0,
+    }
+
+    def get_stats(self, enemy: Enemies, player_level: int) -> Dict[str, int]:
+        rarity_bonus = self.RARITY_BONUS.get(enemy.type.value, 1.0)
+
+        hp = floor(
+            player_level
+            * enemy.health_multiplier
+            * self.BASE_HP
+            * rarity_bonus
+        )
+        damage = floor(
+            player_level
+            * enemy.damage_multiplier
+            * self.BASE_DAMAGE
+            * rarity_bonus
+        )
+
+        return {
+            "hp": max(hp, 1),
+            "damage": max(damage, 1),
+        }
+
+    def get_rewards(self, enemy: Enemies, player_level: int) -> Dict[str, int]:
+        rarity_bonus = self.RARITY_BONUS.get(enemy.type.value, 1.0)
+
+        gold = floor(
+            player_level
+            * enemy.gold_reward_multiplier
+            * self.BASE_GOLD
+            * rarity_bonus
+        )
+        exp = floor(
+            player_level
+            * enemy.exp_reward_multiplier
+            * self.BASE_EXP
+            * rarity_bonus
+        )
+
+        return {
+            "gold": max(gold, 1),
+            "exp": max(exp, 1),
+        }
+
+    def get_drop_chance(self, enemy: Enemies, player_level: int) -> float:
+        bonus = min(player_level // 10, 5)  # +5% за каждые 10 уровней
+        return min(100.0, enemy.drop_chance + bonus)

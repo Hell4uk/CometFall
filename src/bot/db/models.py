@@ -9,6 +9,10 @@ class ItemTypeEnum(str, Enum):
 class ItemRarityEnum(str, Enum):
     COMMON = 'common'
 
+class EnemyTypeEnum(str, Enum):
+    COMMON = 'common'
+    ELITE = 'elite'
+    BOSS = 'boss'
 
 class Users(Model):
     id = fields.BigIntField(pk=True)
@@ -18,7 +22,12 @@ class Users(Model):
     first_name = fields.CharField(max_length=255, null=True)
     last_name = fields.CharField(max_length=255, null=True)
 
+    coins = fields.IntField(default=100)
+    exp = fields.IntField(default=0)
+    lvl = fields.IntField(default=0)
+    
     created_at = fields.DatetimeField(auto_now_add=True)
+    updated_at = fields.DatetimeField(auto_now=True)
 
     class Meta:
         table = 'users'
@@ -37,6 +46,7 @@ class Items(Model):
     rarity = fields.CharEnumField(ItemRarityEnum, default=ItemRarityEnum.COMMON)
 
     created_at = fields.DatetimeField(auto_now_add=True)
+    updated_at = fields.DatetimeField(auto_now=True)
 
     class Meta:
         table = 'items'
@@ -54,7 +64,6 @@ class InventoryItems(Model):
     equipped = fields.BooleanField(default=False)
     
     acquired_at = fields.DatetimeField(auto_now_add=True)
-
     class Meta:
         table = 'inventory_items'
         unique_together = ('user', 'item')
@@ -63,4 +72,31 @@ class InventoryItems(Model):
         return f"<Item id={self.id} x{self.quantity}>"
 
 class Enemies(Model):
-    pass
+    id = fields.BigIntField(pk=True)
+
+    name = fields.CharField(max_length=255, null=False)
+    description = fields.TextField(max_length=512, null=True, default='')
+
+    type = fields.CharEnumField(EnemyTypeEnum, default=EnemyTypeEnum.COMMON)
+
+    health_multiplier = fields.FloatField(default=0.5)
+    damage_multiplier = fields.FloatField(default=0.5)
+
+    gold_reward_multiplier = fields.FloatField(default=0.5)
+    exp_reward_multiplier = fields.FloatField(default=0.5)
+    
+    drop_chance = fields.FloatField(default=25.0, ge=0.0, le=100.0)
+    drop_items = fields.ManyToManyField(
+        "models.Items",
+        related_name='enemy_drops',
+        through='enemy_drop',
+        backward_key='enemy_id'
+    )
+
+    is_active = fields.BooleanField(default=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    updated_at = fields.DatetimeField(auto_now=True)
+
+    class Meta:
+        table = 'enemies'
+        ordering = ["name"]
