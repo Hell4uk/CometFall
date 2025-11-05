@@ -22,4 +22,3 @@ async def bootstrap() -> None:
     )
 
     await dp.start_polling(bot)
-

@@ -51,7 +51,7 @@ class InventoryItems(Model):
     user = fields.ForeignKeyField('models.Users', related_name="inventory_items")
     item = fields.ForeignKeyField('models.Items', related_name='instances')
     quantity = fields.IntField(default=1)
-    equipped = fields.BooleanField(default=True)
+    equipped = fields.BooleanField(default=False)
     
     acquired_at = fields.DatetimeField(auto_now_add=True)
 

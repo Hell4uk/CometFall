@@ -1,9 +1,10 @@
 from typing import Optional, List
 from tortoise.exceptions import DoesNotExist
-from bot.db.models import InventoryItems, Users, Items
+from bot.db.models import InventoryItems, Users, Items, ItemTypeEnum
 from bot.services.item import ItemService
 
 # TODO: Сделать методы для получения используемых предметов, сделать копии методов для получения (dict), также улучшить все существующие методы
+# TODO: Сделать систему при который можно одеть только один предмет каждого типа
 class InventoryService():
     def __init__(self) -> None:
         self.item_service = ItemService()
@@ -51,22 +52,40 @@ class InventoryService():
         await InventoryItems.filter(user=user).delete()
 
     async def equip_item(self, user: Users, item: Items) -> InventoryItems:
-        await InventoryItems.filter(user=user, item__type=item.type, equipped=True).update(equipped=False)
-
         inv = await InventoryItems.get_or_none(user=user, item=item)
         if not inv:
             raise ValueError("Item not found in inventory")
+
+        if inv.equipped:
+            raise ValueError("Item is already equipped")
+
+        equipped_same_type = await InventoryItems.filter(
+            user=user,
+            equipped=True,
+            item__type=item.type
+        ).first()
+
+        if equipped_same_type:
+            raise ValueError(f"You already have an equipped item of type {item.type}")
 
         inv.equipped = True
         await inv.save()
-
         return inv
-    
-    async def unequip_item(self, user: Users, item: Items) -> InventoryItems:
+
+    async def unequip_item(self, user: Users, item: Items) -> None:
         inv = await InventoryItems.get_or_none(user=user, item=item)
         if not inv:
             raise ValueError("Item not found in inventory")
 
+        if not inv.equipped:
+            raise ValueError("Item is not equipped")
+
         inv.equipped = False
         await inv.save()
-        return inv
+
+    async def get_equipped_item(self, user: Users, item_type: ItemTypeEnum) -> Optional[InventoryItems]:
+        return await InventoryItems.filter(
+            user=user,
+            equipped=True,
+            item__type=item_type
+        ).prefetch_related("item").first()

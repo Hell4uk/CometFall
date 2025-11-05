@@ -15,3 +15,4 @@ async def command_start(message: Message) -> None:
 async def callback_mainmenu(callback: CallbackQuery) -> None:
     user = await Users.get(telegram_id=callback.from_user.id)
     await callback.message.edit_text(text=await TelegramTextMap.MAINMENU_TEXT(callback))
+      
