@@ -1,12 +1,13 @@
 from bot.services.inventory import InventoryService
 from ..db.models import Enemies, Items, Users, EnemyTypeEnum
 from typing import List, Dict
+from ..game.logic.calculation import EnemyCalculator
 from random import choice, random
 from math import floor
 
 class EnemyService():
     def __init__(self) -> None:
-        self.calculator = EnemyCalculator()
+        self.calc = EnemyCalculator()
         self.inventory = InventoryService()
 
     async def spawn(self, user: Users) -> Enemies:
@@ -25,7 +26,7 @@ class EnemyService():
         return self.calc.get_stats(enemy, user.lvl)
     
     async def give_reward(self, user: Users, enemy: Enemies) -> Dict:
-        stats = self.calc.get_reward(enemy, user.lvl)
+        stats = self.calc.get_rewards(enemy, user.lvl)
         
         user.coins += stats['gold']
         user.exp += stats['exp']
