@@ -12,6 +12,7 @@ async def bootstrap() -> None:
     from src.bot.handlers.callback.battle import callback_battle_router
     from src.bot.handlers.callback.inventory import callback_inventory_router
     from src.bot.handlers.callback.market import callback_market_router
+    
     dp = Dispatcher()
 
     dp.include_routers(

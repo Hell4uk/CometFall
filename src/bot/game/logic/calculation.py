@@ -2,8 +2,8 @@ from typing import Dict
 from bot.db.models import InventoryItems, ItemRarityEnum, ItemTypeEnum, Users, Enemies, EnemyTypeEnum
 from bot.services.inventory import InventoryService
 from bot.db.schemas.items import WeaponAttributes, ArmorAttributes
-from random import random, gauss, gammavariate
-from math import sqrt, exp, log10, floor
+from random import random, gauss, randint
+from math import floor
 
 # TODO: Сделать классы для обработки общего урона-брони для используемых предметов
 
@@ -69,13 +69,13 @@ class EnemyCalculator:
         user_armor = ArmorCalculation(user).calculate_armor()
         
         hp = floor(
-            pass
+            0
             * enemy.health_multiplier
             * (1+ user_armor) * 0.85
             * bonus * 0.85
         )
         damage = floor(
-            pass    
+            0    
             * enemy.damage_multiplier
             * (1 + user_damage) * 0.85
             * bonus * 0.85

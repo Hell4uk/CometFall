@@ -1,3 +1,4 @@
+from bot.services import inventory
 from bot.services.inventory import InventoryService
 from ..db.models import Enemies, Items, Users, EnemyTypeEnum
 from typing import List, Dict
@@ -67,4 +68,6 @@ class EnemyService():
         old = user.lvl
         while user.exp >= 65 * (user.lvl + 1):
             user.lvl += 1
+
+        await user.save()
         return user.lvl > old

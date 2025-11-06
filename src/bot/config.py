@@ -18,4 +18,16 @@ class TelegramTextMap:
     
     @staticmethod
     async def MAINMENU_TEXT(ctx: Message | CallbackQuery):
-        return f"{ctx.from_user.first_name}, выбери действие:"
+        return f"{ctx.from_user.first_name}, выберите действие:"
+
+    @staticmethod
+    async def BATTLE_MENU(ctx: Message | CallbackQuery):
+        return f"{ctx.from_user.first_name}, выберите локацию:"
+    
+    @staticmethod
+    async def MARKET_MENU(ctx: Message | CallbackQuery):
+        return f"{ctx.from_user.first_name}, выберите действие:"
+    
+    @staticmethod
+    async def INVENTORY_MENU(ctx: Message | CallbackQuery):
+        return f"{ctx.from_user.first_name}, выбери предмет:"

@@ -14,6 +14,7 @@ class EnemyTypeEnum(str, Enum):
     ELITE = 'elite'
     BOSS = 'boss'
 
+# TODO : Сделать модель для локаций, продаваемых предметов на рынке
 class Users(Model):
     id = fields.BigIntField(pk=True)
     telegram_id = fields.BigIntField(unique=True)
