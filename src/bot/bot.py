@@ -1,6 +1,6 @@
 from aiogram import Bot, Dispatcher
 from .config import ConfigService
-
+from .middlewares.safe_edit import SafeEditMiddleware
 
 if not ConfigService.BOT_API_KEY:
     raise Exception("You should enter `BOT_API_KEY` in .env")
@@ -21,5 +21,8 @@ async def bootstrap() -> None:
         callback_battle_router,
         callback_inventory_router,
     )
+
+    dp.message.outer_middleware(SafeEditMiddleware())
+    dp.callback_query.outer_middleware(SafeEditMiddleware())
 
     await dp.start_polling(bot)
