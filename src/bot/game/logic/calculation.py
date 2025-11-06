@@ -1,5 +1,5 @@
 from typing import Dict
-from bot.db.models import InventoryItems, ItemRarityEnum, ItemTypeEnum, Users
+from bot.db.models import InventoryItems, ItemRarityEnum, ItemTypeEnum, Users, Enemies, EnemyTypeEnum
 from bot.services.inventory import InventoryService
 from bot.db.schemas.items import WeaponAttributes, ArmorAttributes
 from random import random, gauss, gammavariate
@@ -52,38 +52,33 @@ class ArmorCalculation(BaseCalculation):
 
         return armor
 
-# src/bot/game/calculate/enemy.py
-from math import floor
-from bot.db.models import Enemies
-from typing import Dict
 
-
+# TODO : Сделать рандомным, подключить userservice и сделать получение lvl.
+# ! : Есть критические ошибки в данном сегменте!
 class EnemyCalculator:
-    BASE_HP      = 12
-    BASE_DAMAGE  = 9
-    BASE_GOLD    = 18
-    BASE_EXP     = 25
-
     RARITY_BONUS = {
-        "common": 1.0,
-        "elite":  2.3,
-        "boss":   8.0,
+        EnemyTypeEnum.COMMON: 1.0,
+        EnemyTypeEnum.ELITE:  2.3,
+        EnemyTypeEnum.BOSS:   8.0,
     }
 
-    def get_stats(self, enemy: Enemies, player_level: int) -> Dict[str, int]:
-        rarity_bonus = self.RARITY_BONUS.get(enemy.type.value, 1.0)
+    def get_stats(self, enemy: Enemies, user: Users) -> Dict[str, int]:
+        bonus = self.RARITY_BONUS.get(enemy.type, 1.0)
 
+        user_damage = DamageCalculation(user).calculate_damage()
+        user_armor = ArmorCalculation(user).calculate_armor()
+        
         hp = floor(
-            player_level
+            pass
             * enemy.health_multiplier
-            * self.BASE_HP
-            * rarity_bonus
+            * (1+ user_armor) * 0.85
+            * bonus * 0.85
         )
         damage = floor(
-            player_level
+            pass    
             * enemy.damage_multiplier
-            * self.BASE_DAMAGE
-            * rarity_bonus
+            * (1 + user_damage) * 0.85
+            * bonus * 0.85
         )
 
         return {
@@ -94,21 +89,19 @@ class EnemyCalculator:
     def get_rewards(self, enemy: Enemies, player_level: int) -> Dict[str, int]:
         rarity_bonus = self.RARITY_BONUS.get(enemy.type.value, 1.0)
 
-        gold = floor(
-            player_level
-            * enemy.gold_reward_multiplier
-            * self.BASE_GOLD
+        coin = floor(
+            enemy.coin_reward_multiplier
+            * self.BASE_COIN
             * rarity_bonus
         )
         exp = floor(
-            player_level
-            * enemy.exp_reward_multiplier
+            enemy.exp_reward_multiplier
             * self.BASE_EXP
             * rarity_bonus
         )
 
         return {
-            "gold": max(gold, 1),
+            "coin": max(coin, 1),
             "exp": max(exp, 1),
         }
 

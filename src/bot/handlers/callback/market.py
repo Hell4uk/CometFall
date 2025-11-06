@@ -3,6 +3,6 @@ from aiogram.types import CallbackQuery
 
 callback_market_router = Router()
 
-@callback_market_router.callback_query(F.data == '')
+@callback_market_router.callback_query(F.data == 'market')
 async def callback_market(callback: CallbackQuery) -> None:
     pass

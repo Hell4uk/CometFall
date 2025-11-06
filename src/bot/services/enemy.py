@@ -5,6 +5,7 @@ from ..game.logic.calculation import EnemyCalculator
 from random import choice, random
 from math import floor
 
+# TODO : Перепроверить все
 class EnemyService():
     def __init__(self) -> None:
         self.calc = EnemyCalculator()
@@ -28,7 +29,7 @@ class EnemyService():
     async def give_reward(self, user: Users, enemy: Enemies) -> Dict:
         stats = self.calc.get_rewards(enemy, user.lvl)
         
-        user.coins += stats['gold']
+        user.coins += stats['coin']
         user.exp += stats['exp']
 
         leveled_up = await self._level_up(user)
@@ -39,7 +40,7 @@ class EnemyService():
             await self.inventory.add(user, drop['item'], drop['quantity'])
         
         return {
-            "gold": stats['gold'],
+            "coin": stats['coin'],
             "exp": stats['exp'],
             'level_up': leveled_up,
             'drop': [f"{d['item'].name}" for d in drops]

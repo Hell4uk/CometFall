@@ -82,7 +82,7 @@ class Enemies(Model):
     health_multiplier = fields.FloatField(default=0.5)
     damage_multiplier = fields.FloatField(default=0.5)
 
-    gold_reward_multiplier = fields.FloatField(default=0.5)
+    coin_reward_multiplier = fields.FloatField(default=0.5)
     exp_reward_multiplier = fields.FloatField(default=0.5)
     
     drop_chance = fields.FloatField(default=25.0, ge=0.0, le=100.0)
