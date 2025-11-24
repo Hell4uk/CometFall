@@ -1,8 +1,7 @@
 from typing import Optional, Type, List, Dict
 
-from tortoise.exceptions import DoesNotExist
-from bot.db.models import Items, InventoryItems, ItemTypeEnum, ItemEnum, ItemRarityEnum
-from bot.db.schemas.items import ArmorAttributes, BaseAttributes, WeaponAttributes
+from ...bot.db.models import Items, ItemTypeEnum, ItemRarityEnum
+from ...bot.db.schemas.items import ArmorAttributes, BaseAttributes, WeaponAttributes
 from pydantic import ValidationError
 
 SCHEMAS_MAP = {

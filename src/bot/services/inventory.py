@@ -1,13 +1,13 @@
 from typing import Optional, List
 from tortoise.exceptions import DoesNotExist
-from bot.db.models import InventoryItems, Users, Items, ItemTypeEnum
-from bot.services.item import ItemService
+from ...bot.db.models import InventoryItems, Users, Items, ItemTypeEnum
+from ...bot.services.item import ItemService, SCHEMAS_MAP
 
 # TODO: Сделать методы для получения используемых предметов, сделать копии методов для получения (dict), также улучшить все существующие методы
 # TODO: Сделать систему при который можно одеть только один предмет каждого типа
 class InventoryService():
     def __init__(self) -> None:
-        self.item_service = ItemService()
+        self.item_service = ItemService(SCHEMAS_MAP)
     
     # ? --- CRUD методы ---
     async def add(self, user: Users, item: Items, quantity: int = 1, auto_create: bool = True) -> InventoryItems:
@@ -88,4 +88,10 @@ class InventoryService():
             user=user,
             equipped=True,
             item__type=item_type
+        ).prefetch_related("item").first()
+
+    async def get_inventory_item(self, user: Users, inventory_item_id: int) -> Optional[InventoryItems]:
+        return await InventoryItems.filter(
+            user=user,
+            id=inventory_item_id
         ).prefetch_related("item").first()

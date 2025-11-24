@@ -8,4 +8,5 @@ callback_battle_router = Router()
 @callback_battle_router.callback_query(F.data == 'battle')
 async def callback_battle(callback: CallbackQuery) -> None:
     user = UserService().get_by_telegram_id(callback.from_user.id)
-    await callback.message.edit_text(text=await TelegramTextMap.BATTLE_MENU())
+    await callback.message.edit_text(text=await TelegramTextMap.BATTLE_MENU(callback))
+

@@ -2,17 +2,20 @@ from tortoise import fields
 from tortoise.models import Model
 from enum import Enum
 
-class ItemTypeEnum(str, Enum):
-    WEAPON = 'weapon'
-    ARMOR = 'armor'
+class ItemTypeEnum(int, Enum):
+    WEAPON = 1
+    ARMOR = 2
 
-class ItemRarityEnum(str, Enum):
-    COMMON = 'common'
-
-class EnemyTypeEnum(str, Enum):
-    COMMON = 'common'
-    ELITE = 'elite'
-    BOSS = 'boss'
+class ItemRarityEnum(int, Enum):
+    COMMON = 1
+    RARE = 2
+    EPIC = 3
+    LEGENDARY = 4
+    
+class EnemyTypeEnum(int, Enum):
+    COMMON = 1
+    ELITE = 2
+    BOSS = 3
 
 # TODO : Сделать модель для локаций, продаваемых предметов на рынке
 class Users(Model):
@@ -42,9 +45,9 @@ class Items(Model):
 
     name = fields.CharField(max_length=225, null=False)
     description = fields.TextField(max_length=512, null=True)
-    type = fields.CharEnumField(ItemTypeEnum)
+    type = fields.IntEnumField(ItemTypeEnum)
     attributes = fields.JSONField(default=dict)
-    rarity = fields.CharEnumField(ItemRarityEnum, default=ItemRarityEnum.COMMON)
+    rarity = fields.IntEnumField(ItemRarityEnum, default=ItemRarityEnum.COMMON)
 
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
@@ -78,7 +81,7 @@ class Enemies(Model):
     name = fields.CharField(max_length=255, null=False)
     description = fields.TextField(max_length=512, null=True, default='')
 
-    type = fields.CharEnumField(EnemyTypeEnum, default=EnemyTypeEnum.COMMON)
+    type = fields.IntEnumField(EnemyTypeEnum, default=EnemyTypeEnum.COMMON)
 
     health_multiplier = fields.FloatField(default=0.5)
     damage_multiplier = fields.FloatField(default=0.5)
@@ -101,3 +104,23 @@ class Enemies(Model):
     class Meta:
         table = 'enemies'
         ordering = ["name"]
+
+class Locations(Model):
+    id = fields.BigIntField(pk=True)
+    name = fields.CharField(max_length=255)
+    description = fields.TextField()
+    level_required = fields.IntField(default=1)
+    enemies = fields.ManyToManyField("models.Enemies", related_name="locations")
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+    updated_at = fields.DatetimeField(auto_now=True)
+class MarketItem(Model):
+    id = fields.BigIntField(pk=True)
+
+    item = fields.ForeignKeyField("models.Items")
+    seller = fields.ForeignKeyField("models.Users")
+
+    price = fields.IntField()    
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+    updated_at = fields.DatetimeField(auto_now=True)
