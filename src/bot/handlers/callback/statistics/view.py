@@ -1,3 +1,4 @@
+from math import e
 from aiogram.types import CallbackQuery
 from aiogram import F
 from .deps import statistics_router, user_service, inventory_service
@@ -11,6 +12,22 @@ async def view_user_statistics(callback: CallbackQuery):
     equipped_sword = inventory_service.get_equipped_item(user, ItemTypeEnum.WEAPON)
     equipped_armor = inventory_service.get_equipped_item(user, ItemTypeEnum.ARMOR)
 
-    message = f"{callback.from_user.first_name}, ваша статистика:\nМонет: {user.coins}\n"
+    message = f"""
+    {callback.from_user.first_name}, ваша статистика:
+    ===========================
+    Монет: {user.coins}
+    Уровень: {user.lvl}
+    Опыт: {user.exp}
+    ===========================
+    Побед (в режиме приключений): {user.sp_wins}
+    Поражений (в режиме приключений): {user.sp_loses}
+    ===========================
+    ELO: {user.elo}
+    Побед (в режиме дуэль): {user.mp_wins}
+    Поражений (в режиме дуэль): {user.mp_wins}
+    ===========================
+    Ваше оружие: {equipped_sword.rarity} | {equipped_sword.name}
+    Ваша броня: {equipped_armor.rarity} | {equipped_armor.name}
+    """
 
-    await callback.message.edit_text('', reply_markup=await get_statistic_keyboard())
+    await callback.message.edit_text(message, reply_markup=await get_statistic_keyboard())
