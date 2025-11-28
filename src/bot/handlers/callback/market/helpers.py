@@ -47,22 +47,41 @@ def next_rarity_slug(current: str) -> str:
 
 def format_item_description(item: Items) -> str:
     attrs = item.attributes or {}
-    min_damage = attrs.get("min_damage")
-    max_damage = attrs.get("max_damage")
-    attack_speed = attrs.get("attack_speed")
-
-    avg_damage = None
-    if isinstance(min_damage, (int, float)) and isinstance(max_damage, (int, float)):
-        avg_damage = (min_damage + max_damage) / 2
-
-    avg_damage_text = f"{avg_damage:.1f}" if avg_damage is not None else "—"
-    attack_speed_text = f"{attack_speed:.2f}" if isinstance(attack_speed, (int, float)) else "—"
     description = item.description or "Описание отсутствует."
 
-    return (
-        f"{item.name}:\n\n"
-        f"Описание: {description}\n\n"
-        f"Средний урон: {avg_damage_text}\n"
-        f"Скорость атаки: {attack_speed_text}"
-    )
+    text = [
+        f"{item.name}:\n",
+        f"Описание: {description}\n",
+    ]
+
+    if "min_damage" in attrs and "max_damage" in attrs:
+        min_damage = attrs.get("min_damage")
+        max_damage = attrs.get("max_damage")
+        attack_speed = attrs.get("attack_speed")
+
+        avg_damage = None
+        if isinstance(min_damage, (int, float)) and isinstance(max_damage, (int, float)):
+            avg_damage = (min_damage + max_damage) / 2
+
+        avg_damage_text = f"{avg_damage:.1f}" if avg_damage is not None else "—"
+        attack_speed_text = f"{attack_speed:.2f}" if isinstance(attack_speed, (int, float)) else "—"
+
+        text += [
+            f"Средний урон: {avg_damage_text}",
+            f"Скорость атаки: {attack_speed_text}",
+        ]
+
+    elif "defense" in attrs:
+        defense = attrs.get("defense")
+        health_bonus = attrs.get("health_bonus", 0)
+
+        text += [
+            f"Защита: {defense if isinstance(defense, int) else '—'}",
+            f"Бонус к здоровью: {health_bonus if isinstance(health_bonus, int) else '—'}",
+        ]
+    
+    else:
+        text.append("Характеристики: отсутствуют")
+
+    return "\n".join(text)
 

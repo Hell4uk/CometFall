@@ -8,7 +8,7 @@ if not ConfigService.BOT_API_KEY:
 bot = Bot(token=ConfigService.BOT_API_KEY)
 
 async def bootstrap() -> None:
-    from .middlewares.safe_edit import SafeEditMiddleware
+    from .middlewares.safe_edit import SafePatchMiddleware
     from .middlewares.logging import LoggingMiddleware
 
     from src.bot.handlers.default import default_router
@@ -25,8 +25,8 @@ async def bootstrap() -> None:
         callback_inventory_router,
     )
 
-    dp.message.outer_middleware(SafeEditMiddleware())
-    dp.callback_query.outer_middleware(SafeEditMiddleware())
+    dp.message.outer_middleware(SafePatchMiddleware())
+    dp.callback_query.outer_middleware(SafePatchMiddleware())
 
     dp.message.outer_middleware(LoggingMiddleware())
     dp.callback_query.outer_middleware(LoggingMiddleware())

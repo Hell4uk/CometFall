@@ -9,7 +9,7 @@ FilterValue = Optional[Union[str, int]]
 DEFAULT_FILTERS: Dict[str, FilterValue] = {
     "search": "",
     "rarity": "all",
-    "min_price": None,
+    "min_price": 0,
     "max_price": None,
 }
 

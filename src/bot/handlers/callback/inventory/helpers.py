@@ -26,16 +26,6 @@ async def collect_items(user, item_type: ItemTypeEnum, inv_service: InventorySer
 def format_item_detail_text(inv_item) -> str:
     item = inv_item.item
     attributes = item.attributes or {}
-    min_damage = attributes.get("min_damage")
-    max_damage = attributes.get("max_damage")
-    attack_speed = attributes.get("attack_speed")
-
-    avg_damage = None
-    if isinstance(min_damage, (int, float)) and isinstance(max_damage, (int, float)):
-        avg_damage = (min_damage + max_damage) / 2
-
-    avg_damage_text = f"{avg_damage:.1f}" if avg_damage is not None else "—"
-    attack_speed_text = f"{attack_speed:.2f}" if isinstance(attack_speed, (int, float)) else "—"
     description = item.description or "Описание отсутствует."
 
     parts = [
@@ -43,11 +33,39 @@ def format_item_detail_text(inv_item) -> str:
         "",
         f"Описание: {description}",
         "",
-        f"Средний урон: {avg_damage_text}",
-        f"Скорость аттаки: {attack_speed_text}",
+    ]
+
+    if "min_damage" in attributes and "max_damage" in attributes:
+        min_damage = attributes.get("min_damage")
+        max_damage = attributes.get("max_damage")
+        attack_speed = attributes.get("attack_speed")
+
+        avg_damage = None
+        if isinstance(min_damage, (int, float)) and isinstance(max_damage, (int, float)):
+            avg_damage = (min_damage + max_damage) / 2
+
+        parts += [
+            f"Средний урон: {avg_damage:.1f}" if avg_damage is not None else "Средний урон: —",
+            f"Скорость атаки: {attack_speed:.2f}" if isinstance(attack_speed, (int, float)) else "Скорость атаки: —",
+        ]
+
+    elif "defense" in attributes:
+        defense = attributes.get("defense")
+        health_bonus = attributes.get("health_bonus", 0)
+
+        parts += [
+            f"Защита: {defense}" if isinstance(defense, int) else "Защита: —",
+            f"Бонус к здоровью: {health_bonus}" if isinstance(health_bonus, int) else "Бонус к здоровью: —",
+        ]
+
+    else:
+        parts.append("Характеристики: отсутствуют или неизвестный тип предмета.")
+
+    parts += [
         "",
         "Продать — выставить предмет на рынок и получить монеты.",
     ]
+
     return "\n".join(parts)
 
 
