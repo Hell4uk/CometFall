@@ -29,7 +29,15 @@ class Users(Model):
     coins = fields.IntField(default=100)
     exp = fields.IntField(default=0)
     lvl = fields.IntField(default=0)
+
+    sp_wins = fields.IntField(default=0)
+    sp_loses = fields.IntField(default=0)
+
+    mp_wins = fields.IntField(default=0)
+    mp_loses = fields.IntField(default=0)
     
+    elo = fields.IntField(default=0)
+
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
 
@@ -83,6 +91,10 @@ class Enemies(Model):
 
     type = fields.IntEnumField(EnemyTypeEnum, default=EnemyTypeEnum.COMMON)
 
+    # TODO: Make it
+    #all_locations = 
+    #preferred_locations =
+
     health_multiplier = fields.FloatField(default=0.5)
     damage_multiplier = fields.FloatField(default=0.5)
 
@@ -103,8 +115,10 @@ class Enemies(Model):
 
     class Meta:
         table = 'enemies'
-        ordering = ["name"]
+        ordering = ['id', "name"]
 
+    def __str__(self) -> str:
+        return f"<Enemy id={self.id} name={self.name} type={self.type}>"
 class Locations(Model):
     id = fields.BigIntField(pk=True)
     name = fields.CharField(max_length=255)
@@ -114,6 +128,13 @@ class Locations(Model):
 
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+
+    class Meta:
+        table = 'locations'
+        ordering = ['id']
+
+    def __str__(self) -> str:
+        return f'<Location id={self.id} name={self.name}>'
 class MarketItem(Model):
     id = fields.BigIntField(pk=True)
 
@@ -124,3 +145,10 @@ class MarketItem(Model):
 
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+
+    class Meta:
+        table = 'market_items'
+        ordering = ['id', 'item', 'price']
+    
+    def __str__(self) -> str:
+        return f'<MarketItem id={self.id} item_id={self.item.id}>'
