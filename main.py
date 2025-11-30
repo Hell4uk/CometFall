@@ -2,6 +2,10 @@ import logging
 from src.bot.bot import bootstrap
 from src.bot.db.database import init_db, close_db
 import asyncio
+import sys
+
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 logging.basicConfig(
     level=logging.DEBUG,

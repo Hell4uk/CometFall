@@ -23,12 +23,12 @@ class DamageCalculation(BaseCalculation):
 
         weapon_attributes = equipped_item.item.attributes
         
-        damage = gauss(weapon_attributes.min_damage, weapon_attributes.max_damage)
-        if random() < weapon_attributes.critical_chance:
-            damage *= weapon_attributes.critical_multiplier
+        damage = gauss(weapon_attributes.get("min_damage"), weapon_attributes.get("max_damage"))
+        if random() < weapon_attributes.get("critical_chance"):
+            damage *= weapon_attributes.get("critical_multiplier")
         
-        damage *= weapon_attributes.attack_speed
-        damage *= 1 + (weapon_attributes.item_level * 0.02) 
+        damage *= weapon_attributes.get("attack_speed")
+        damage *= 1 + (weapon_attributes.get("item_level") * 0.02) 
         damage = floor(damage)
 
         return damage
@@ -45,9 +45,9 @@ class ArmorCalculation(BaseCalculation):
 
         armor_attributes = equipped_item.item.attributes
 
-        armor = armor_attributes.defense
-        armor *= 1 + (armor_attributes.health_bonus * random())
-        armor *= 1 + (armor_attributes.item_level * 0.02)
+        armor = armor_attributes.get("defense")
+        armor *= 1 + (armor_attributes.get("health_bonus") * random())
+        armor *= 1 + (armor_attributes.get("item_level") * 0.02)
         armor = floor(armor)
 
         return armor
@@ -62,11 +62,11 @@ class EnemyCalculator:
         EnemyTypeEnum.BOSS:   8.0,
     }
 
-    def get_stats(self, enemy: Enemies, user: Users) -> Dict[str, int]:
+    async def get_stats(self, enemy: Enemies, user: Users) -> Dict[str, int]:
         bonus = self.RARITY_BONUS.get(enemy.type, 1.0)
 
-        user_damage = DamageCalculation(user).calculate_damage()
-        user_armor = ArmorCalculation(user).calculate_armor()
+        user_damage = await DamageCalculation(user).calculate_damage()
+        user_armor = await ArmorCalculation(user).calculate_armor()
         
         hp = floor(
             0
@@ -93,7 +93,7 @@ class EnemyCalculator:
             enemy.coin_reward_multiplier
             * self.BASE_COIN
             * rarity_bonus
-        )
+        )   
         exp = floor(
             enemy.exp_reward_multiplier
             * self.BASE_EXP
@@ -104,7 +104,7 @@ class EnemyCalculator:
             "coin": max(coin, 1),
             "exp": max(exp, 1),
         }
-
+    
     def get_drop_chance(self, enemy: Enemies, player_level: int) -> float:
         bonus = min(player_level // 10, 5)  # +5% за каждые 10 уровней
         return min(100.0, enemy.drop_chance + bonus)
