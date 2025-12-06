@@ -8,16 +8,12 @@ from math import floor
 # TODO: Сделать классы для обработки общего урона-брони для используемых предметов
 
 class BaseCalculation:
-    def __init__(self, user: Users) -> None:
-        self.user = user
+    def __init__(self) -> None:
         self.inventory_service = InventoryService()
 
 class DamageCalculation(BaseCalculation):
-    def __init__(self, user: Users) -> None:
-        super().__init__(user)
-
-    async def calculate_damage(self) -> int:
-        equipped_item = await self.inventory_service.get_equipped_item(self.user, ItemTypeEnum.WEAPON)
+    async def calculate_damage(self, user: Users) -> int:
+        equipped_item = await self.inventory_service.get_equipped_item(user, ItemTypeEnum.WEAPON)
         if not equipped_item:
             return 0
 
@@ -35,11 +31,8 @@ class DamageCalculation(BaseCalculation):
 
 
 class ArmorCalculation(BaseCalculation):
-    def __init__(self, user: Users) -> None:
-        super().__init__(user)
-
-    async def calculate_armor(self) -> float:
-        equipped_item = await self.inventory_service.get_equipped_item(self.user, ItemTypeEnum.ARMOR)
+    async def calculate_armor(self, user: Users) -> float:
+        equipped_item = await self.inventory_service.get_equipped_item(user, ItemTypeEnum.ARMOR)
         if not equipped_item:
             return 0
 

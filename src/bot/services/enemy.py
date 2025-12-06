@@ -1,5 +1,5 @@
 from .inventory import InventoryService
-from ..db.models import Enemies, Items, Users, EnemyTypeEnum
+from ..db.models import Enemies, Items, Users, EnemyTypeEnum, Locations
 from typing import List, Dict
 from ..game.logic.calculation import EnemyCalculator
 from random import choice, random
@@ -11,10 +11,17 @@ class EnemyService():
         self.calc = EnemyCalculator()
         self.inventory = InventoryService()
 
-    async def spawn(self, user: Users) -> Enemies:
+    async def spawn(self, user: Users, location: Locations) -> Enemies:
         level = max(1, user.lvl)
         rarity = self._get_rarity(level)
-        candidates = await Enemies.filter(type=rarity, is_active=True).all()
+        candidates = await Enemies.filter(
+            type=rarity,
+            is_active=True,
+            locations__id=location.id
+        ).all()
+
+        if not candidates:
+            candidates = await Enemies.filter(type=rarity, is_active=True).all()
         if not candidates:
             raise ValueError("No enemies available for this level")
         return choice(candidates)

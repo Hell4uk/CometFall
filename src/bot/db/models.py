@@ -91,10 +91,6 @@ class Enemies(Model):
 
     type = fields.IntEnumField(EnemyTypeEnum, default=EnemyTypeEnum.COMMON)
 
-    # TODO: Make it
-    #all_locations = 
-    #preferred_locations =
-
     health_multiplier = fields.FloatField(default=0.5)
     damage_multiplier = fields.FloatField(default=0.5)
 
@@ -119,10 +115,13 @@ class Enemies(Model):
 
     def __str__(self) -> str:
         return f"<Enemy id={self.id} name={self.name} type={self.type}>"
+        
 class Locations(Model):
     id = fields.BigIntField(pk=True)
+
     name = fields.CharField(max_length=255)
     description = fields.TextField()
+
     level_required = fields.IntField(default=1)
     enemies = fields.ManyToManyField("models.Enemies", related_name="locations")
 
@@ -135,6 +134,7 @@ class Locations(Model):
 
     def __str__(self) -> str:
         return f'<Location id={self.id} name={self.name}>'
+
 class MarketItem(Model):
     id = fields.BigIntField(pk=True)
 
