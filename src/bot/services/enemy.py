@@ -1,5 +1,4 @@
-from bot.services import inventory
-from bot.services.inventory import InventoryService
+from .inventory import InventoryService
 from ..db.models import Enemies, Items, Users, EnemyTypeEnum
 from typing import List, Dict
 from ..game.logic.calculation import EnemyCalculator

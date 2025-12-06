@@ -5,6 +5,6 @@ from ...config import TelegramTextMap
 async def get_statistic_keyboard() -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
 
-    kb.button('Назад', callback_data='mainmenu')
+    kb.button(text='Назад', callback_data='mainmenu')
 
     return kb.adjust(1).as_markup()

@@ -1,7 +1,7 @@
 from typing import Dict
-from bot.db.models import InventoryItems, ItemRarityEnum, ItemTypeEnum, Users, Enemies, EnemyTypeEnum
-from bot.services.inventory import InventoryService
-from bot.db.schemas.items import WeaponAttributes, ArmorAttributes
+from ...db.models import InventoryItems, ItemRarityEnum, ItemTypeEnum, Users, Enemies, EnemyTypeEnum
+from ...services.inventory import InventoryService
+from ...db.schemas.items import WeaponAttributes, ArmorAttributes
 from random import random, gauss, randint
 from math import floor
 

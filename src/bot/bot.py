@@ -15,6 +15,7 @@ async def bootstrap() -> None:
     from src.bot.handlers.callback.battle import callback_battle_router
     from src.bot.handlers.callback.inventory import callback_inventory_router
     from src.bot.handlers.callback.market import callback_market_router
+    from src.bot.handlers.callback.statistics import callback_statistics_router
     
     dp = Dispatcher(storage=MemoryStorage())
 
@@ -23,6 +24,7 @@ async def bootstrap() -> None:
         callback_market_router,
         callback_battle_router,
         callback_inventory_router,
+        callback_statistics_router,
     )
 
     dp.message.outer_middleware(SafePatchMiddleware())

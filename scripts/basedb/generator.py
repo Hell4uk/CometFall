@@ -4,6 +4,8 @@ from typing import Iterable, Tuple
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
+from tortoise import Tortoise
+
 from src.bot.db.database import close_db, init_db
 from src.bot.db.models import ItemRarityEnum, ItemTypeEnum, Items
 
@@ -33,6 +35,20 @@ def _cycled_value(values: Iterable[str], index: int) -> str:
 def _rarity_for_index(index: int) -> ItemRarityEnum:
     slug = RARITY_ROTATION[index % len(RARITY_ROTATION)]
     return RARITY_MAP[slug]
+
+
+async def _reset_sequence():
+    """Reset PostgreSQL sequence to match the maximum ID in the items table."""
+    # Get the maximum ID using Tortoise ORM
+    max_item = await Items.all().order_by("-id").first()
+    max_id = max_item.id if max_item else 0
+    # Reset the sequence to the maximum ID (or 1 if table is empty)
+    next_id = max(max_id, 1)
+    
+    # Execute raw SQL to reset the sequence using the underlying connection
+    conn = Tortoise.get_connection("default")
+    # Use execute_query for SELECT statements
+    await conn.execute_query(f"SELECT setval('items_id_seq', {next_id}, true);")
 
 
 async def _ensure_default_items():
@@ -70,6 +86,9 @@ async def _ensure_default_items():
             description="Старая одежда. Немного защищает.",
         )
         print("Создана", armor.name, "(id=2)")
+    
+    # Reset the sequence to prevent ID conflicts
+    await _reset_sequence()
 
 
 async def _bulk_create_weapons(start_index: int, count: int):

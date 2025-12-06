@@ -1,8 +1,8 @@
 from aiogram import Router
 
-from ....services.enemy import EnemyService
-from ....services.inventory import InventoryService
-from ....services.user import UserService
+from .....services.enemy import EnemyService
+from .....services.inventory import InventoryService
+from .....services.user import UserService
 
 multiplayer_router = Router()
 
