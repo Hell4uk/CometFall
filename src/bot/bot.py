@@ -12,7 +12,8 @@ async def bootstrap() -> None:
     from .middlewares.logging import LoggingMiddleware
 
     from src.bot.handlers.default import default_router
-    from src.bot.handlers.callback.battle import callback_battle_router
+    from src.bot.handlers.callback.battle.default import callback_menu_battle
+    from src.bot.handlers.callback.battle.singleplayer import callback_singleplayer_router
     from src.bot.handlers.callback.inventory import callback_inventory_router
     from src.bot.handlers.callback.market import callback_market_router
     from src.bot.handlers.callback.statistics import callback_statistics_router
@@ -22,7 +23,8 @@ async def bootstrap() -> None:
     dp.include_routers(
         default_router,
         callback_market_router,
-        callback_battle_router,
+        callback_menu_battle,
+        callback_singleplayer_router,
         callback_inventory_router,
         callback_statistics_router,
     )

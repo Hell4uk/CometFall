@@ -19,7 +19,7 @@ class DamageCalculation(BaseCalculation):
 
         weapon_attributes = equipped_item.item.attributes
         
-        damage = gauss(weapon_attributes.get("min_damage"), weapon_attributes.get("max_damage"))
+        damage = randint(weapon_attributes.get("min_damage"), weapon_attributes.get("max_damage"))
         if random() < weapon_attributes.get("critical_chance"):
             damage *= weapon_attributes.get("critical_multiplier")
         
@@ -54,21 +54,23 @@ class EnemyCalculator:
         EnemyTypeEnum.ELITE:  2.3,
         EnemyTypeEnum.BOSS:   8.0,
     }
+    BASE_COIN = 1
+    BASE_EXP = 1
 
     async def get_stats(self, enemy: Enemies, user: Users) -> Dict[str, int]:
         bonus = self.RARITY_BONUS.get(enemy.type, 1.0)
 
-        user_damage = await DamageCalculation(user).calculate_damage()
-        user_armor = await ArmorCalculation(user).calculate_armor()
+        user_damage = await DamageCalculation().calculate_damage(user)
+        user_armor = await ArmorCalculation().calculate_armor(user)
         
         hp = floor(
-            0
+            user.lvl
             * enemy.health_multiplier
-            * (1+ user_armor) * 0.85
+            * (1 + user_armor) * 0.85
             * bonus * 0.85
         )
         damage = floor(
-            0    
+            user.lvl    
             * enemy.damage_multiplier
             * (1 + user_damage) * 0.85
             * bonus * 0.85
@@ -79,7 +81,7 @@ class EnemyCalculator:
             "damage": max(damage, 1),
         }
 
-    def get_rewards(self, enemy: Enemies, player_level: int) -> Dict[str, int]:
+    async def get_rewards(self, enemy: Enemies, player_level: int) -> Dict[str, int]:
         rarity_bonus = self.RARITY_BONUS.get(enemy.type.value, 1.0)
 
         coin = floor(
@@ -98,6 +100,6 @@ class EnemyCalculator:
             "exp": max(exp, 1),
         }
     
-    def get_drop_chance(self, enemy: Enemies, player_level: int) -> float:
+    async def get_drop_chance(self, enemy: Enemies, player_level: int) -> float:
         bonus = min(player_level // 10, 5)  # +5% за каждые 10 уровней
         return min(100.0, enemy.drop_chance + bonus)

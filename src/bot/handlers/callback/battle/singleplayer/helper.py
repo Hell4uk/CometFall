@@ -27,9 +27,17 @@ async def fighting(user: Users, location: Locations):
     user_damage = await damage_calculator.calculate_damage(user)
     user_hp = await armor_calculator.calculate_armor(user)
 
+
+    rewarding = await enemy_calculator.get_rewards(enemy, user.lvl)
+    drop_chance = await enemy_calculator.get_drop_chance(enemy, user.lvl)
+
+
     return {
         "enemy_hp": enemy_hp,
         "enemy_dmg": enemy_damage,
         "user_hp": user_hp,
         "user_dmg": user_damage,
+        "reward": rewarding,
+        "drop_chance": drop_chance,
+        "enemy": enemy,
     }

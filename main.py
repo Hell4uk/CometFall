@@ -23,8 +23,8 @@ async def main() -> None:
     await init_db()
     try:
         await bootstrap()
-        
-    except InterruptedError:
+
+    except KeyboardInterrupt:
         print("Telegram bot was closed!")
 
     finally:

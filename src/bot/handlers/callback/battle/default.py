@@ -5,7 +5,7 @@ from ....keyboards.inlines.battle import battle_menu
 callback_menu_battle = Router()
 
 @callback_menu_battle.callback_query(F.data == 'battle_menu')
-async def battle_menu(callback: CallbackQuery):
+async def cmd_battle_menu(callback: CallbackQuery):
     await callback.message.edit_text(text=f'{callback.from_user.first_name}, выберите тип сражения:', reply_markup=await battle_menu())
 
 @callback_menu_battle.callback_query(F.data == 'battle_multiplayer')
