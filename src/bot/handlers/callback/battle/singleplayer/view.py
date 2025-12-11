@@ -10,3 +10,16 @@ async def developer_manage_menu(callback: CallbackQuery, location_name='Лес �
     results = await fighting(user, location)
 
     await callback.message.edit_text(text=f'{results}')
+
+@singleplayer_router.callback_query(F.data == 'battle_singleplayer')
+async def confirm_menu_battle(callback: CallbackQuery):
+    pass
+
+@singleplayer_router.callback_query(F.data == "")
+async def start_fighting(callback: CallbackQuery):
+    pass
+
+@singleplayer_router.callback_query(F.data == '')
+async def func1(callback: CallbackQuery):
+    pass
+

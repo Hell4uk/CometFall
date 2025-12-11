@@ -1,6 +1,7 @@
 from logging import critical
 from pydantic import BaseModel, Field
 from typing import Optional
+from ..models import ItemTypeEnum
 
 
 class BaseAttributes(BaseModel):
@@ -20,3 +21,10 @@ class ArmorAttributes(BaseAttributes):
     defense: int = Field(..., ge=1)
     
     health_bonus: int = Field(ge=0, default=0)
+
+class EnchantAttributes(BaseAttributes):
+    for_type: ItemTypeEnum = Field(...)
+
+class CaseAttributes(BaseModel):
+    collection: str = Field(...)
+    storage: str = Field(...)

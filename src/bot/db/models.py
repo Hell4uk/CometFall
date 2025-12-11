@@ -5,6 +5,8 @@ from enum import Enum
 class ItemTypeEnum(int, Enum):
     WEAPON = 1
     ARMOR = 2
+    ENCHANT = 3
+    CASE = 4
 
 class ItemRarityEnum(int, Enum):
     COMMON = 1
