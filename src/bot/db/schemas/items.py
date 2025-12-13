@@ -1,11 +1,11 @@
 from logging import critical
 from pydantic import BaseModel, Field
-from typing import Optional
-from ..models import ItemTypeEnum
+from typing import Optional, List, Coroutine
+from ..models import ItemTypeEnum, Items
 
 
 class BaseAttributes(BaseModel):
-    item_level: int = Field(..., ge=1)
+    pass
 
 class WeaponAttributes(BaseAttributes):
     min_damage: int = Field(..., ge=1)
@@ -27,4 +27,5 @@ class EnchantAttributes(BaseAttributes):
 
 class CaseAttributes(BaseModel):
     collection: str = Field(...)
-    storage: str = Field(...)
+    storage: List[Items] = Field(...)
+

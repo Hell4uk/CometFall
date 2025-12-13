@@ -29,17 +29,16 @@ class EnemyService():
     async def get_battle_stats(self, enemy: Enemies, user: Users) -> Dict:
         return await self.calc.get_stats(enemy, user)  # await
 
-    async def give_reward(self, user: Users, enemy: Enemies) -> Dict:
-        stats = self.calc.get_rewards(enemy, user.lvl)
-        user.coins += stats['coin']
-        user.exp += stats['exp']
+    async def give_reward(self, user: Users, enemy: Enemies, exp: int, coins: int) -> Dict:
+        user.coins += coins
+        user.exp += exp
         leveled_up = await self._level_up(user)
         drops = await self._roll_drops(enemy)
         for drop in drops:
             await self.inventory.add(user, drop['item'], drop['quantity'])
         await user.save()
         return {
-            "coin": stats['coin'], "exp": stats['exp'],
+            "coin": coins, "exp": exp,
             'level_up': leveled_up, 'drop': [f"{d['item'].name} x{d['quantity']}" for d in drops]
         }
 

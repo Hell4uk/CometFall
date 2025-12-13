@@ -47,7 +47,11 @@ class ItemService():
     async def get_by_name(self, item_name: str) -> Optional[List[Items]]:
         items = await Items.filter(name=item_name).all()
         return items
-
+    
+    async def get_by_type(self, item_type: ItemTypeEnum) -> Optional[List[Items]]:
+        items = await Items.filter(type=item_type)
+        return items
+    
     async def update(self, item_id: str, **updates: any) -> Items:
         item = await self.get_by_id(item_id)
 

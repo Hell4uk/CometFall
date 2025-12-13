@@ -31,3 +31,9 @@ async def confirm_singleplayer_battle() -> InlineKeyboardMarkup:
     kb.button(text='Нет', callback_data="battle_singleplayer:cancel")
 
     return kb.adjust(1).as_markup()
+
+async def finished_singleplayer_fight() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+
+    kb.button(text='', callback_data='battle_singleplayer:start')
+    kb.button(text='', callbac_data='battle_singleplayer:back')

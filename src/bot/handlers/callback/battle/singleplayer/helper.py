@@ -10,10 +10,7 @@ async def find_location_by_name(location_name: str) -> Locations:
     return location
 
 async def check_available_location(user: Users, location: Locations) -> bool:
-    if user.lvl < location.level_required:
-        return True
-    else:
-        return False
+    return True if location.level_required < user.lvl else False
 
 async def reduce_damage(raw_damage: float, target_armor: float, k: float = 80.0) -> float:
     return raw_damage * (1 - target_armor / (target_armor + k))
@@ -43,7 +40,7 @@ async def fighting(user: Users, location: Locations):
 
 
     return {
-        'winner': 'user' if user_wins else 'emeny',
+        'winner': 'user' if user_wins else 'enemy',
         "enemy_hp": enemy_hp,
         "enemy_dmg": enemy_damage,
         "user_hp": user_hp,

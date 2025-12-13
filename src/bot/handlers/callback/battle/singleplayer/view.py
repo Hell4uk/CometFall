@@ -1,25 +1,28 @@
 from aiogram import F
 from aiogram.types import CallbackQuery
-from .deps import user_service, singleplayer_router, inventory_service, enemy_service
+from .deps import user_service, singleplayer_router, inventory_service, enemy_service, finished_singleplayer_fight, battle_menu
 from .helper import fighting, find_location_by_name
 
-@singleplayer_router.callback_query(F.data == 'battle_singleplayer')
-async def developer_manage_menu(callback: CallbackQuery, location_name='Лес Теней'):
+
+@singleplayer_router.callback_query(F.data == 'battle_singleplayer:start')
+async def start_singleplayer_battle(callback: CallbackQuery, location_name: str = 'Лес Теней'):
     user = await user_service.get_by_telegram_id(callback.from_user.id)
     location = await find_location_by_name(location_name)
-    results = await fighting(user, location)
+    result = await fighting(user, location)
+    
+    result_fight = 'вы выйграли' if result['winner'] == 'user' else 'вы програли'
 
-    await callback.message.edit_text(text=f'{results}')
+    BASE_TEXT = f"""
+{callback.from_user.first_name}, {result_fight}. Вам попался: {result['enemy'].name}
 
-@singleplayer_router.callback_query(F.data == 'battle_singleplayer')
-async def confirm_menu_battle(callback: CallbackQuery):
-    pass
+Ваш урон: {result['user_dmg']}
+Ваша броня: {result['user_hp']}
 
-@singleplayer_router.callback_query(F.data == "")
-async def start_fighting(callback: CallbackQuery):
-    pass
+Урон противника: {result['enemy_dmg']}
+Броня противника: {result['enemy_hp']}
 
-@singleplayer_router.callback_query(F.data == '')
-async def func1(callback: CallbackQuery):
-    pass
-
+За игру вы получили: {result['reward']['coins']} урона, {result['reward']['exp']} опыта
+"""
+    await enemy_service.give_reward(user, result['enemy'], result['reward']['exp'], result['reward']['coins'])
+    await callback.message.edit_text(text=BASE_TEXT, reply_markup=await finished_singleplayer_fight())
+    await callback.answer()
