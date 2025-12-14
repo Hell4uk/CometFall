@@ -27,5 +27,5 @@ class EnchantAttributes(BaseAttributes):
 
 class CaseAttributes(BaseModel):
     collection: str = Field(...)
-    storage: List[Items] = Field(...)
+    storage: List[int] = Field(...)
 

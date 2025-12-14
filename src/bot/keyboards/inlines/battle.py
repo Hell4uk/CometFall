@@ -18,7 +18,7 @@ async def singleplayer_menu_location() -> InlineKeyboardMarkup:
     locations = await Locations.all()
 
     for loc in locations:
-        kb.button(text=loc.name, callback_data=f"battle_loc_{loc.id}")
+        kb.button(text=loc.name, callback_data=f"battle_singleplayer:start:{loc.id}")
 
     kb.button(text="Назад", callback_data="battle_menu")
     
@@ -35,5 +35,5 @@ async def confirm_singleplayer_battle() -> InlineKeyboardMarkup:
 async def finished_singleplayer_fight() -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
 
-    kb.button(text='', callback_data='battle_singleplayer:start')
-    kb.button(text='', callbac_data='battle_singleplayer:back')
+    kb.button(text='Заного', callback_data='battle_singleplayer:start')
+    kb.button(text='Назад', callbac_data='battle_menu')

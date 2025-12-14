@@ -9,6 +9,13 @@ async def find_location_by_name(location_name: str) -> Locations:
 
     return location
 
+async def find_location_by_id(location_id: int) -> Locations:
+    location = await Locations.get_or_none(id=location_id)
+    if not location:
+        raise Exception('Location not founded')
+    
+    return location
+
 async def check_available_location(user: Users, location: Locations) -> bool:
     return True if location.level_required < user.lvl else False
 

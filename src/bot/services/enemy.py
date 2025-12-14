@@ -50,7 +50,7 @@ class EnemyService():
         return EnemyTypeEnum.COMMON
 
     async def _roll_drops(self, enemy: Enemies) -> List[Dict]:
-        chance = self.calc.get_drop_chance(enemy, 1)  # player_level TODO: from user
+        chance = await self.calc.get_drop_chance(enemy, 1)  # player_level TODO: from user
         if random() * 100 > chance:
             return []
         drops = []
