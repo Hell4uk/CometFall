@@ -16,10 +16,10 @@ async def start_singleplayer_battle(callback: CallbackQuery):
         return
 
     user = await user_service.get_by_telegram_id(callback.from_user.id)
-    location = await find_location_by_id(match.group(1))
+    location = await find_location_by_id(int(match.group(1)))
     result = await fighting(user, location)
     
-    result_fight = 'вы выйграли' if result['winner'] == 'user' else 'вы програли'
+    result_fight = 'вы выиграли' if result['winner'] == 'user' else 'вы проиграли'
 
     BASE_TEXT = f"""
 {callback.from_user.first_name}, {result_fight}. Вам попался: {result['enemy'].name}
@@ -30,7 +30,7 @@ async def start_singleplayer_battle(callback: CallbackQuery):
 Урон противника: {result['enemy_dmg']}
 Броня противника: {result['enemy_hp']}
 
-За игру вы получили: {result['reward']['coin']} урона, {result['reward']['exp']} опыта
+За игру вы получили: {result['reward']['coin']} монет, {result['reward']['exp']} опыта
 """
     await enemy_service.give_reward(user, result['enemy'], result['reward']['exp'], result['reward']['coin'])
     await callback.message.edit_text(text=BASE_TEXT, reply_markup=await finished_singleplayer_fight())

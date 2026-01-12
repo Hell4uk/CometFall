@@ -36,7 +36,7 @@ class Users(Model):
     sp_loses = fields.IntField(default=0)
 
     mp_wins = fields.IntField(default=0)
-    mp_loses = fields.IntField(default=0)
+    mp_losses = fields.IntField(default=0)
     
     elo = fields.IntField(default=0)
 
@@ -47,6 +47,7 @@ class Users(Model):
         table = 'users'
         ordering = ['id', 'username']
 
+    @property
     def __str__(self) -> str:
         return f"<User id={self.id} telegram_id={self.telegram_id} ({self.username})>"
 

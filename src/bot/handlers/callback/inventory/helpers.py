@@ -8,11 +8,25 @@ from .state import RARITY_ORDER
 
 
 def item_type_slug(item_type: ItemTypeEnum) -> str:
-    return "weapon" if item_type == ItemTypeEnum.WEAPON else "armor"
+    if item_type == ItemTypeEnum.WEAPON:
+        return "weapon"
+    elif item_type == ItemTypeEnum.ARMOR:
+        return "armor"
+    elif item_type == ItemTypeEnum.CASE:
+        return "case"
+    else:
+        return "item"
 
 
 def item_type_name(item_type: ItemTypeEnum) -> str:
-    return "оружия" if item_type == ItemTypeEnum.WEAPON else "брони"
+    if item_type == ItemTypeEnum.WEAPON:
+        return "оружия"
+    elif item_type == ItemTypeEnum.ARMOR:
+        return "брони"
+    elif item_type == ItemTypeEnum.CASE:
+        return "кейсов"
+    else:
+        return "предметов"
 
 
 async def collect_items(user, item_type: ItemTypeEnum, inv_service: InventoryService) -> Tuple[List, int]:
@@ -35,7 +49,23 @@ def format_item_detail_text(inv_item) -> str:
         "",
     ]
 
-    if "min_damage" in attributes and "max_damage" in attributes:
+    # Обработка кейсов
+    if item.type == ItemTypeEnum.CASE:
+        collection = attributes.get("collection", "Неизвестно")
+        is_limited = attributes.get("is_limited", False)
+        max_opens = attributes.get("max_opens")
+        storage_count = len(attributes.get("storage", []))
+        
+        parts += [
+            f"Коллекция: {collection}",
+            f"Предметов в кейсе: {storage_count}",
+            f"Ограниченный: {'Да' if is_limited else 'Нет'}",
+        ]
+        if max_opens:
+            parts.append(f"Макс открытий: {max_opens}")
+    
+    # Обработка оружия
+    elif "min_damage" in attributes and "max_damage" in attributes:
         min_damage = attributes.get("min_damage")
         max_damage = attributes.get("max_damage")
         attack_speed = attributes.get("attack_speed")
@@ -49,6 +79,7 @@ def format_item_detail_text(inv_item) -> str:
             f"Скорость атаки: {attack_speed:.2f}" if isinstance(attack_speed, (int, float)) else "Скорость атаки: —",
         ]
 
+    # Обработка брони
     elif "defense" in attributes:
         defense = attributes.get("defense")
         health_bonus = attributes.get("health_bonus", 0)
@@ -63,7 +94,7 @@ def format_item_detail_text(inv_item) -> str:
 
     parts += [
         "",
-        "Продать — выставить предмет на рынок и получить монеты.",
+        "Продать — выставить предмет на рынок и получить монеты." if item.type != ItemTypeEnum.CASE else "Открыть — получить случайный предмет из коллекции.",
     ]
 
     return "\n".join(parts)

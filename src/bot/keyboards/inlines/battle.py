@@ -35,5 +35,7 @@ async def confirm_singleplayer_battle() -> InlineKeyboardMarkup:
 async def finished_singleplayer_fight() -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
 
-    kb.button(text='Заного', callback_data='battle_singleplayer:start')
-    kb.button(text='Назад', callbac_data='battle_menu')
+    kb.button(text='Заново', callback_data='battle_singleplayer')
+    kb.button(text='Назад', callback_data='battle_menu')
+
+    return kb.adjust(2).as_markup()

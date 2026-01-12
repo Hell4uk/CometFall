@@ -36,9 +36,9 @@ class MarketService:
         search: Optional[str] = None
     ) -> List[Items]:
         qs = Items.filter(type=item_type)
-        if rarity:
+        if rarity and rarity != ItemRarityEnum.COMMON:  # Avoid filtering if 'all' selected
             qs = qs.filter(rarity=rarity)
-        if search:
+        if search and search.strip():
             qs = qs.filter(name__icontains=search)
 
         return await qs.order_by("rarity", "name").all()

@@ -13,8 +13,9 @@ def inventory_type_keyboard() -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
     kb.button(text="🗡️ Оружие", callback_data="inv_type_weapon")
     kb.button(text="🛡️ Броня", callback_data="inv_type_armor")
+    kb.button(text="🎁 Кейсы", callback_data="inv_type_case")
     kb.button(text="◀️ Назад", callback_data="mainmenu")
-    kb.adjust(2, 1)
+    kb.adjust(2, 1, 1)
     return kb.as_markup()
 
 def inventory_items_keyboard(items: list, page: int = 0, total_pages: int = 1, item_type: str = "armor") -> InlineKeyboardMarkup:
@@ -50,7 +51,13 @@ def inventory_items_keyboard(items: list, page: int = 0, total_pages: int = 1, i
 
 def inventory_item_view_keyboard(item_id: int, item_type: str) -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
-    kb.button(text="💰 Продать", callback_data=f"inv_sell_{item_id}")
+    
+    # Для кейсов показываем кнопку открытия вместо продажи
+    if item_type == "case":
+        kb.button(text="🎁 Открыть", callback_data=f"open_case_{item_id}")
+    else:
+        kb.button(text="💰 Продать", callback_data=f"inv_sell_{item_id}")
+    
     kb.button(text="◀️ Назад", callback_data=f"inv_type_{item_type}")
     kb.adjust(1)
     return kb.as_markup()

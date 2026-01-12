@@ -15,6 +15,7 @@ def market_main_keyboard(rarity_label: str) -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
     kb.button(text="🗡️ Список оружия", callback_data="market_type_weapon")
     kb.button(text="🛡️ Список брони", callback_data="market_type_armor")
+    kb.button(text="🎁 Кейсы", callback_data="cases_catalog")
     kb.button(text="🔍 Поиск", callback_data="market_search")
     kb.button(text=f"🎯 Редкость: {rarity_label}", callback_data="market_cycle_rarity")
     kb.button(text="💵 Мин. цена", callback_data="market_set_min_price")
@@ -22,7 +23,7 @@ def market_main_keyboard(rarity_label: str) -> InlineKeyboardMarkup:
     kb.button(text="🧹 Сброс фильтров", callback_data="market_filters_reset")
     kb.button(text="📦 Мои лоты", callback_data="market_my_listings")
     kb.button(text="◀️ Назад", callback_data="mainmenu")
-    kb.adjust(2, 2, 2, 2, 1)
+    kb.adjust(2, 1, 2, 2, 2, 1)
     return kb.as_markup()
 
 
